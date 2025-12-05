@@ -55,7 +55,7 @@ sederhana dengan fitur:
 Diagram ini disusun berdasarkan standar **ISA-5.1** (*Instrumentation
 Symbols and Identification*).
 
-![P&ID Diagram](path/to/your/PID_Image.png)
+![P&ID Diagram](PID-Diagram.png)
 
 **Identifikasi Instrumen:** \* **LIC-101:** Level Indicator Controller
 (Ultrasonic + Arduino). \* **PIC-101:** Pressure Indicator Controller
