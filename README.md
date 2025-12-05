@@ -2,12 +2,13 @@
 
 ![Arduino](https://img.shields.io/badge/Platform-Arduino-blue)
 ![Status](https://img.shields.io/badge/Status-Prototype-green)
-![Cover](_SISTEM_PENGENDALIAN_CAIRAN_INDUSTRI_OTOMATIS.png)
 
 Proyek ini adalah simulasi sistem otomasi industri untuk pengendalian
 tangki cairan (*Process Tank*) berbasis mikrokontroler Arduino Uno.
 Sistem ini dirancang untuk mengintegrasikan kontrol Level, Tekanan, dan
 Suhu secara simultan dalam siklus tertutup (*Closed Loop System*).
+
+![Cover](Circuit-Schematic.png)
 
 Proyek ini dibuat untuk memenuhi tugas mata kuliah **Sistem Kontrol /
 Otomasi Industri**.
