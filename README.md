@@ -105,7 +105,10 @@ Berikut adalah konfigurasi pin yang digunakan dalam kode program:
 
 ## 🧠 Logika Kontrol
 
-Sistem bekerja berdasarkan logika *Closed Loop* berikut:
+Sistem bekerja berdasarkan prinsip *Closed Loop Feedback*. Berikut adalah alur diagram blok sistem:
+
+![Block Diagram](System-Block-Diagram.png)
+*Gambar 1. Diagram Blok Input-Proses-Output*
 
 ### 1. Pengisian Air (Hysteresis Loop)
 
