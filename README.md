@@ -156,7 +156,7 @@ if (LevelAir <= 20%) {
 
 Clone Repository ini: Bash
 
-    git clone https://github.com/username-kamu/repo-name.git
+    git clone https://github.com/vizartid/Industrial-Liquid-Control.git
 
 Buka Kode: Buka file main.ino (atau nama file kodemu) menggunakan
 Arduino IDE.
