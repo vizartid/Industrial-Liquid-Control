@@ -53,8 +53,7 @@ sederhana dengan fitur:
 Diagram ini disusun berdasarkan standar **ISA-5.1** (*Instrumentation
 Symbols and Identification*).
 
-![P&ID Diagram](path/to/your/PID_Image.png) *(Ganti
-'path/to/your/PID_Image.png' dengan link gambar P&ID kamu)*
+![P&ID Diagram](path/to/your/PID_Image.png)
 
 **Identifikasi Instrumen:** \* **LIC-101:** Level Indicator Controller
 (Ultrasonic + Arduino). \* **PIC-101:** Pressure Indicator Controller
@@ -86,18 +85,19 @@ berikut:
 
 Berikut adalah konfigurasi pin yang digunakan dalam kode program:
 
-  Komponen                      Pin Arduino   Tipe Sinyal
-  ----------------------------- ------------- ----------------
-  **TMP36 (Suhu)**              A0            Analog Input
-  **Potensiometer (Tekanan)**   A1            Analog Input
-  **Servo Valve**               D3            PWM Output
-  **Pompa (Motor DC)**          D4            Digital Output
-  **Ultrasonic Trig**           D5            Digital Output
-  **Ultrasonic Echo**           D6            Digital Input
-  **LED Alarm**                 D7            Digital Output
-  **Buzzer**                    D9            Digital Output
-  **LCD SDA**                   A4            I2C Data
-  **LCD SCL**                   A5            I2C Clock
+| Komponen                    | Pin Arduino | Tipe Sinyal      |
+|-----------------------------|-------------|------------------|
+| **TMP36 (Suhu)**            | A0          | Analog Input     |
+| **Potensiometer (Tekanan)** | A1          | Analog Input     |
+| **Servo Valve**             | D3          | PWM Output       |
+| **Pompa (Motor DC)**        | D4          | Digital Output   |
+| **Ultrasonic Trig**         | D5          | Digital Output   |
+| **Ultrasonic Echo**         | D6          | Digital Input    |
+| **LED Alarm**               | D7          | Digital Output   |
+| **Buzzer**                  | D9          | Digital Output   |
+| **LCD SDA**                 | A4          | I2C Data         |
+| **LCD SCL**                 | A5          | I2C Clock        |
+
 
 ------------------------------------------------------------------------
 
