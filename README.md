@@ -117,6 +117,7 @@ Sistem bekerja berdasarkan prinsip *Closed Loop Feedback*. Berikut adalah alur d
 
 ### 1. Pengisian Air (Hysteresis Loop)
 
+![Block Diagram](Decision-Tree-Algorithm.png)
 Logika ini mencegah pompa hidup-mati terlalu cepat.
 
 ``` cpp
