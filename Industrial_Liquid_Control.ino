@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Servo.h>
 // ==================================
@@ -27,7 +26,7 @@ const int servoPin = 3;           // Kabel Servo (Signal/Orange) masuk ke Pin 3
 // Variabel Data Penyimpanan Sementara Di set 0 
 float temperature = 0;            // Menyimpan hasil hitungan suhu (°C)
 float level = 0;                  // Menyimpan hasil hitungan jarak ultrasonik (cm)
-int pressure = 0;                 // Menyimpan hasil persentase tekanan (%)
+int tekanan = 0;                 // Menyimpan hasil persentase tekanan (%)
 
 // Catatan 
 // CATATAN TIPE DATA & FUNGSI:
@@ -37,9 +36,9 @@ int pressure = 0;                 // Menyimpan hasil persentase tekanan (%)
 // bool = Tipe data true or false (0,1)
 
 // Nilai Batas Aman / Ambang batas (Threshold)
-const float TEMP_THRESHOLD = 40.0;    // Batas suhu maksimal (40 derajat)
-const float LEVEL_THRESHOLD = 67.2;   // Batas jarak pompa nyala (20% dari 336cm)
-const int PRESSURE_THRESHOLD = 80;    // Batas Tekanan dalam Persen (80%)
+const float BATAS_TEMPERATURE = 40.0;    // Batas suhu maksimal (40 derajat)
+const float BATAS_LEVEL = 67.2;   // Batas jarak pompa nyala (20% dari 336cm)
+const int BATAS_TEKANAN = 80;    // Batas Tekanan dalam Persen (80%)
 
 
 // Alarm berbunyi jika Tekanan > 80% ATAU suhu > 40 derajat
@@ -66,7 +65,7 @@ void setup() {  // Mengatur arah fungsi setiap pin
   digitalWrite(ledPin, 0);        // Memastikan LED Mati
   
   // MULAI SISTEM KOMUNIKASI & LAYAR
-  Serial.begin(1000);             // Memulai komunikasi ke sistem
+  Serial.begin(9600);             // Memulai komunikasi ke sistem
   lcd.init();                     // Menyalakan LCD
   lcd.backlight();                // Menyalakan lampu latar LCD
   
@@ -89,18 +88,18 @@ void setup() {  // Mengatur arah fungsi setiap pin
 // Kode ini akan berulang terus menerus selama devicenya tidak dimatikan (Close loop)
 void loop() {
   // Membaca kondisi lingkungan lewat sensor
-  Level();           // Membaca ketiggian air di dalam tangi
-  Temperature();     // Membaca suhu didalam tangki
-  Pressure();        // membaca tekanan didalam tangki  
+  PembacaanLevel();           // Membaca ketiggian air di dalam tangi
+  PembacaanTemperature();     // Membaca suhu didalam tangki
+  PembacaanTekanan();        // membaca tekanan didalam tangki  
   
   // Alur Logika untuk megambil keputusan (Otak sistem)
-  Pump();        // Menentukan apakah pompa harus nyala atau mati jika batas levelnya di atas 20% (67.2)
-  Alarm();       // Mementukan alarm perlu menyala jika dalam kondisi berbahaya tekanan 80% dan temperatur diatas 40%
-  Valve();        // Menentukan apakah katup perlu dibuka saat tekanan diatas 80%
+  LogikaPump();        // Menentukan apakah pompa harus nyala atau mati jika batas levelnya di atas 20% (67.2)
+  LogikaAlarm();       // Mementukan alarm perlu menyala jika dalam kondisi berbahaya tekanan 80% dan temperatur diatas 40%
+  LogikaValve();        // Menentukan apakah katup perlu dibuka saat tekanan diatas 80%
   
   // Melaporkan hasil ke manusia
-  displayLCD();          // Menampilkan data status terbaru ke Layar LCD
-  displaySerial();      
+  UpdateLCD();          // Menampilkan data status terbaru ke Layar LCD
+  UpdateSerial();      
   
   delay(1000);           // delay 1 detik sebelum mengulang proses pembacaan lagi
 }
@@ -111,7 +110,7 @@ void loop() {
 
 // Fungsi Pembacaan Sensor 
 
-void Level() {
+void PembacaanLevel() {
   // Proses menembakkan gelombang suara ultrasonik
   digitalWrite(trigPin, 0);
   delayMicroseconds(2);
@@ -126,7 +125,7 @@ void Level() {
   // Jika "level" atau jarak) (< 67.2 cm) , artinya air dekat dari sensor (Tangki penuh)  
 }
 
-void Temperature() {
+void PembacaanTemperature() {
   // Membaca data listrik dari sensor TMP36 
   int tempValue = analogRead(tmp36Pin);  
   // Mengubah data listrik menjadi Tegangan (V)
@@ -135,18 +134,18 @@ void Temperature() {
   temperature = (voltage - 0.5) * 100;
 }
 
-void Pressure() {
+void PembacaanTekanan() {
   // Membaca putaran potensiometer
-  int pressureValue = analogRead(pressurePin);
+  int tekananValue = analogRead(pressurePin);
   // Mengubah skala 0-1000 menjadi Persen 0-100%
-  pressure = map(pressureValue, 0, 1000, 0, 100);
+  tekanan = map(tekananValue, 0, 1000, 0, 100);
 }
 
 // Fungsi Kendali Otomatis
 
-void Pump() {
+void LogikaPump() {
   // Jika 'level' (jarak) > 67.2 cm, artinya air jauh dari sensor (Tangki Kosong/Sedikit)
-  if (level > LEVEL_THRESHOLD) { 
+  if (level > BATAS_LEVEL) { 
     digitalWrite(pumpPin, 1);  // Menyalakan Pompa untuk mengisi
   } else {
   // Jika 'level' (jarak) < 67.2 cm , artinya air dekat dari sensor (Tangki penuh)  
@@ -154,9 +153,9 @@ void Pump() {
   }
 }
 
-void Valve() {
+void LogikaValve() {
   // Jika Tekanan lebih dari (> 80%), maka servo otomatis akan terbuka untuk membuang tekanan pada tangki)
-  if (pressure > PRESSURE_THRESHOLD) {
+  if (tekanan > BATAS_TEKANAN) {
     valveServo.write(0); // Servo 0 derajat (Buka)
   } else {
   // Jika Tekanan Kurang dari (< 80%) , maka servo otomatis akan tertutup
@@ -164,9 +163,9 @@ void Valve() {
   }
 }
 
-void Alarm() {
+void LogikaAlarm() {
   // Fungsi Alarm akan nyala jika Suhu di atas 40 derajat atau Tekanan di atas 80 persen 
-  if (temperature > TEMP_THRESHOLD || pressure > PRESSURE_THRESHOLD) {
+  if (temperature > BATAS_TEMPERATURE || tekanan > BATAS_TEKANAN) {
     digitalWrite(buzzerPin, 1); // Menyalakan suara peringatan 
     digitalWrite(ledPin, 1);    // Menyalakan lampu peringatan 
   } else {
@@ -177,8 +176,7 @@ void Alarm() {
 
 // Fungsi Tampilan Layar 
 
-// dibawah ini belum 
-void displayLCD() {
+void UpdateLCD() {
   //  Menampilkan Suhu (T) dan Jarak Air (L)
   lcd.setCursor(0, 0);
   lcd.print("T:"); 
@@ -191,22 +189,22 @@ void displayLCD() {
   // Menampilkan Persentase Tekanan dan Status Sistem
   lcd.setCursor(0, 1);
   lcd.print("P:"); 
-  lcd.print(pressure);           // Tampilkan tekanan tanpa koma
+  lcd.print(tekanan);           // Tampilkan tekanan tanpa koma
   lcd.print("% ");
   
   // Logika Menampilkan Pesan Status(LCD) (Belum selesai komentarnya)
-  if (pressure > PRESSURE_THRESHOLD) {
-    lcd.print("VALVE OPEN");// Tampil jika Katup terbuka
-  } else if (temperature > TEMP_THRESHOLD) {
+  if (tekanan > BATAS_TEKANAN) {
+    lcd.print("VALVE OPEN ");// Tampil jika Katup terbuka
+  } else if (temperature > BATAS_TEMPERATURE) {
     lcd.print("ALERT!    ");      // Tampil jika kepanasan
-  } else if (level > LEVEL_THRESHOLD) {
+  } else if (level > BATAS_LEVEL) {
     lcd.print("PUMP ON   ");      // Tampil jika sedang mengisi air
   } else {
     lcd.print("NORMAL    ");      // Tampil jika standby (penuh & aman)
   }
 }
 
-void displaySerial() {
+void UpdateSerial() {
   // Fungsi ini bertugas mengirim laporan ke layar Laptop (Serial Monitor)
   
   // Menampilkan Data Sensor (Suhu, Level, Tekanan)
@@ -215,7 +213,7 @@ void displaySerial() {
   Serial.print("C | Level: "); 
   Serial.print(level, 1);
   Serial.print("cm | Tekanan: "); 
-  Serial.print(pressure);
+  Serial.print(tekanan);
   Serial.print("% | Pompa: "); 
   
   // Menampilkan Status Pompa
@@ -224,5 +222,5 @@ void displaySerial() {
   
   // Menampilkan Status Servo
   // Jika > 80% tulis 'OPEN', selain itu tulis 'CLOSED'"
-  Serial.println(pressure > PRESSURE_THRESHOLD ? "OPEN" : "CLOSED");
+  Serial.println(tekanan > BATAS_TEKANAN ? "OPEN" : "CLOSED");
 }
