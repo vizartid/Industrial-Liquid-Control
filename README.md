@@ -10,9 +10,6 @@ Suhu secara simultan dalam siklus tertutup (*Closed Loop System*).
 
 ![Cover](Circuit-Schematic.png)
 
-Proyek ini dibuat untuk memenuhi tugas mata kuliah **Sistem Kontrol /
-Otomasi Industri**.
-
 ------------------------------------------------------------------------
 
 ## 📋 Daftar Isi
